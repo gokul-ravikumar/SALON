@@ -1,0 +1,18 @@
+/* Small, hand-picked custom utilities. Kept intentionally minimal —
+   most styling is composed from Tailwind's own utilities in components. */
+
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility focus-ring {
+  @apply outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal-50 dark:focus-visible:ring-offset-charcoal-950;
+}
+
+@utility section-container {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
