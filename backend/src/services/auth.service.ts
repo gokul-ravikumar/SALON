@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import { User } from "../models/User";
 import { ApiError } from "../utils/ApiError";
-import { RegisterInput } from "../validators/auth.validator";
+import { generateToken } from "../utils/generateToken";
+import { loginInput, RegisterInput } from "../validators/auth.validator";
 
 export const registerUser = async (input: RegisterInput) => {
   const { name, email, phone, password, confirmPassword } = input;
@@ -30,5 +31,31 @@ export const registerUser = async (input: RegisterInput) => {
     name: user.name,
     email: user.email,
     phone: user.phone,
+  };
+};
+
+export const loginUser = async (input: loginInput) => {
+  const { email, password } = input;
+
+  const existingUser = await User.findOne({ email });
+
+  if (!existingUser) {
+    throw new ApiError(400, "Invalid credentials");
+  }
+
+  const isMatch = await bcrypt.compare(password, existingUser.password);
+
+  if (!isMatch) {
+    throw new ApiError(400, "Invalid credentials");
+  }
+
+  const token = generateToken(existingUser._id.toString());
+
+  return {
+    id: existingUser._id,
+    name: existingUser.name,
+    email: existingUser.email,
+    phone: existingUser.phone,
+    token,
   };
 };
