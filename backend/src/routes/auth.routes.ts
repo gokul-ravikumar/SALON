@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { login, register } from "../controllers/auth.controller";
+import { login, me, register } from "../controllers/auth.controller";
+import { protect } from "../middlewares/auth.middleware";
 import { validateRequest } from "../middlewares/validateRequest";
 import { asyncHandler } from "../utils/asyncHandler";
 import { loginSchema, registerSchema } from "../validators/auth.validator";
@@ -17,5 +18,7 @@ router.post(
   validateRequest(loginSchema),
   asyncHandler(login)
 );
+
+router.get("/me", protect, asyncHandler(me));
 
 export default router;
