@@ -1,11 +1,10 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 import { useAuthStore } from "@/store/authStore";
 import { ApiError } from "@/lib/api";
 
 export function RegisterPage() {
-  const navigate = useNavigate();
   const register = useAuthStore((state) => state.register);
 
   const [name, setName] = useState("");
@@ -15,6 +14,7 @@ export function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [registered, setRegistered] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -22,13 +22,35 @@ export function RegisterPage() {
     setIsSubmitting(true);
     try {
       await register({ name, email, phone, password, confirmPassword });
-      navigate("/");
+      setRegistered(true);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Registration failed");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (registered) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-charcoal-50 px-4 dark:bg-charcoal-950">
+        <div className="w-full max-w-sm rounded-2xl border border-charcoal-200 bg-white p-6 text-center shadow-sm dark:border-charcoal-700 dark:bg-charcoal-900">
+          <h1 className="font-display text-xl text-charcoal-900 dark:text-charcoal-50">
+            Check your email
+          </h1>
+          <p className="mt-3 text-sm text-charcoal-600 dark:text-charcoal-400">
+            Your account has been created. Please check your email to verify
+            your account.
+          </p>
+          <Link
+            to="/login"
+            className="mt-6 inline-block text-sm text-primary-600 dark:text-primary-400"
+          >
+            Back to login
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-charcoal-50 px-4 dark:bg-charcoal-950">

@@ -1,43 +1,66 @@
 import bcrypt from "bcrypt";
-import { User } from "../models/User";
+import { Types } from "mongoose";
+import { appConfig } from "../config/brevo.config";
+import * as userRepository from "../repositories/user.repository";
+import { emailService } from "./email/email.service";
 import { ApiError } from "../utils/ApiError";
 import { generateToken } from "../utils/generateToken";
+import { generateSecureToken, hashToken } from "../utils/token.util";
 import { loginInput, RegisterInput } from "../validators/auth.validator";
 
-export const registerUser = async (input: RegisterInput) => {
-  const { name, email, phone, password, confirmPassword } = input;
+const VERIFICATION_TOKEN_TTL_MS =
+  appConfig.emailVerificationExpiryHours * 60 * 60 * 1000;
 
-  const existingUser = await User.findOne({ email });
+const issueVerificationToken = async (user: {
+  _id: Types.ObjectId;
+  name: string;
+  email: string;
+}) => {
+  const { rawToken, hashedToken, expiresAt } = generateSecureToken(
+    VERIFICATION_TOKEN_TTL_MS
+  );
+
+  await userRepository.setVerificationToken(
+    user._id.toString(),
+    hashedToken,
+    expiresAt
+  );
+
+  await emailService.sendVerificationEmail(user.email, user.name, rawToken);
+};
+
+export const registerUser = async (input: RegisterInput) => {
+  const { name, email, phone, password } = input;
+
+  const existingUser = await userRepository.findByEmail(email);
 
   if (existingUser) {
-    throw new ApiError(400, "User already exists");
-  }
+    if (existingUser.isEmailVerified) {
+      throw new ApiError(400, "Email already registered");
+    }
 
-  if (password !== confirmPassword) {
-    throw new ApiError(400, "Passwords do not match");
+    await issueVerificationToken(existingUser);
+    return { message: "Registration successful. Please verify your email." };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await User.create({
+  const user = await userRepository.createUser({
     name,
     email,
     phone,
     password: hashedPassword,
   });
 
-  return {
-    id: user._id,
-    name: user.name,
-    email: user.email,
-    phone: user.phone,
-  };
+  await issueVerificationToken(user);
+
+  return { message: "Registration successful. Please verify your email." };
 };
 
 export const loginUser = async (input: loginInput) => {
   const { email, password } = input;
 
-  const existingUser = await User.findOne({ email });
+  const existingUser = await userRepository.findByEmail(email);
 
   if (!existingUser) {
     throw new ApiError(400, "Invalid credentials");
@@ -47,6 +70,10 @@ export const loginUser = async (input: loginInput) => {
 
   if (!isMatch) {
     throw new ApiError(400, "Invalid credentials");
+  }
+
+  if (!existingUser.isEmailVerified) {
+    throw new ApiError(403, "Please verify your email before logging in.");
   }
 
   const token = generateToken(existingUser._id.toString());
@@ -61,7 +88,7 @@ export const loginUser = async (input: loginInput) => {
 };
 
 export const getCurrentUser = async (userId: string) => {
-  const user = await User.findById(userId);
+  const user = await userRepository.findById(userId);
 
   if (!user) {
     throw new ApiError(404, "User not found");
@@ -74,4 +101,46 @@ export const getCurrentUser = async (userId: string) => {
     phone: user.phone,
     role: user.role,
   };
+};
+
+export const verifyEmail = async (rawToken: string) => {
+  const hashedTokenValue = hashToken(rawToken);
+
+  const user = await userRepository.findByHashedVerificationToken(
+    hashedTokenValue
+  );
+
+  if (!user) {
+    throw new ApiError(400, "Invalid verification link");
+  }
+
+  if (
+    !user.emailVerificationExpires ||
+    user.emailVerificationExpires.getTime() < Date.now()
+  ) {
+    throw new ApiError(400, "Verification link expired");
+  }
+
+  await userRepository.markEmailAsVerified(user._id.toString());
+
+  return { message: "Email verified successfully" };
+};
+
+export const resendVerificationEmail = async (email: string) => {
+  const GENERIC_MESSAGE =
+    "If an account exists for this email, a verification email has been sent.";
+
+  const user = await userRepository.findByEmail(email);
+
+  if (!user) {
+    return { message: GENERIC_MESSAGE };
+  }
+
+  if (user.isEmailVerified) {
+    return { message: "Email already verified." };
+  }
+
+  await issueVerificationToken(user);
+
+  return { message: GENERIC_MESSAGE };
 };

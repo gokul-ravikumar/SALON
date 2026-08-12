@@ -27,7 +27,8 @@ interface AuthState {
   user: AuthUser | null;
   token: string | null;
   login: (payload: LoginPayload) => Promise<void>;
-  register: (payload: RegisterPayload) => Promise<void>;
+  register: (payload: RegisterPayload) => Promise<{ message: string }>;
+  resendVerification: (email: string) => Promise<{ message: string }>;
   logout: () => void;
   fetchMe: () => Promise<void>;
 }
@@ -51,23 +52,17 @@ export const useAuthStore = create<AuthState>()(
       },
 
       register: async (payload) => {
-        await apiFetch<{ user: AuthUser }>("/auth/register", {
+        return apiFetch<{ message: string }>("/auth/register", {
           method: "POST",
           body: JSON.stringify(payload),
         });
+      },
 
-        const data = await apiFetch<{ user: AuthUser & { token: string } }>(
-          "/auth/login",
-          {
-            method: "POST",
-            body: JSON.stringify({
-              email: payload.email,
-              password: payload.password,
-            }),
-          },
-        );
-        const { token, ...user } = data.user;
-        set({ user, token });
+      resendVerification: async (email) => {
+        return apiFetch<{ message: string }>("/auth/resend-verification", {
+          method: "POST",
+          body: JSON.stringify({ email }),
+        });
       },
 
       logout: () => set({ user: null, token: null }),

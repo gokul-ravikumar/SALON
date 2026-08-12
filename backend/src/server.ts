@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
 import "./types/express";
 import { connectDB } from "./config/db";
 import app from "./app";

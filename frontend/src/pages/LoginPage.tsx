@@ -8,22 +8,46 @@ export function LoginPage() {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
 
+  const resendVerification = useAuthStore((state) => state.resendVerification);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [resendStatus, setResendStatus] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+    setNeedsVerification(false);
+    setResendStatus(null);
     setIsSubmitting(true);
     try {
       await login({ email, password });
       navigate("/");
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Login failed");
+      const message = err instanceof ApiError ? err.message : "Login failed";
+      setError(message);
+      setNeedsVerification(
+        err instanceof ApiError &&
+          err.status === 403 &&
+          message.toLowerCase().includes("verify your email"),
+      );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResendStatus(null);
+    try {
+      const result = await resendVerification(email);
+      setResendStatus(result.message);
+    } catch (err) {
+      setResendStatus(
+        err instanceof ApiError ? err.message : "Could not resend email",
+      );
     }
   };
 
@@ -68,6 +92,23 @@ export function LoginPage() {
           <p className="mt-4 text-sm text-red-600 dark:text-red-400">
             {error}
           </p>
+        )}
+
+        {needsVerification && (
+          <div className="mt-2">
+            <button
+              type="button"
+              onClick={handleResend}
+              className="text-sm text-primary-600 underline dark:text-primary-400"
+            >
+              Resend verification email
+            </button>
+            {resendStatus && (
+              <p className="mt-2 text-sm text-charcoal-600 dark:text-charcoal-400">
+                {resendStatus}
+              </p>
+            )}
+          </div>
         )}
 
         <Button type="submit" className="mt-6 w-full" disabled={isSubmitting}>

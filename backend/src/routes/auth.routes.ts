@@ -1,9 +1,20 @@
 import { Router } from "express";
-import { login, me, register } from "../controllers/auth.controller";
+import {
+  login,
+  me,
+  register,
+  resendVerification,
+  verifyEmailHandler,
+} from "../controllers/auth.controller";
 import { protect } from "../middlewares/auth.middleware";
 import { validateRequest } from "../middlewares/validateRequest";
 import { asyncHandler } from "../utils/asyncHandler";
-import { loginSchema, registerSchema } from "../validators/auth.validator";
+import {
+  loginSchema,
+  registerSchema,
+  resendVerificationSchema,
+  verifyEmailQuerySchema,
+} from "../validators/auth.validator";
 
 const router = Router();
 
@@ -17,6 +28,18 @@ router.post(
   "/login",
   validateRequest(loginSchema),
   asyncHandler(login)
+);
+
+router.get(
+  "/verify-email",
+  validateRequest(verifyEmailQuerySchema, "query"),
+  asyncHandler(verifyEmailHandler)
+);
+
+router.post(
+  "/resend-verification",
+  validateRequest(resendVerificationSchema),
+  asyncHandler(resendVerification)
 );
 
 router.get("/me", protect, asyncHandler(me));
