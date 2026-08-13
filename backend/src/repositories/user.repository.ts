@@ -13,7 +13,7 @@ export const findById = (id: string) => User.findById(id);
 
 export const findByHashedVerificationToken = (hashedToken: string) =>
   User.findOne({ emailVerificationToken: hashedToken }).select(
-    "+emailVerificationToken +emailVerificationExpires"
+    "+emailVerificationToken +emailVerificationExpires",
   );
 
 export const createUser = (input: CreateUserInput) => User.create(input);
@@ -21,7 +21,7 @@ export const createUser = (input: CreateUserInput) => User.create(input);
 export const setVerificationToken = (
   userId: string,
   hashedToken: string,
-  expiresAt: Date
+  expiresAt: Date,
 ) =>
   User.findByIdAndUpdate(userId, {
     emailVerificationToken: hashedToken,
@@ -32,5 +32,4 @@ export const markEmailAsVerified = (userId: string) =>
   User.findByIdAndUpdate(userId, {
     isEmailVerified: true,
     verifiedAt: new Date(),
-    $unset: { emailVerificationToken: 1, emailVerificationExpires: 1 },
   });

@@ -17,13 +17,13 @@ const issueVerificationToken = async (user: {
   email: string;
 }) => {
   const { rawToken, hashedToken, expiresAt } = generateSecureToken(
-    VERIFICATION_TOKEN_TTL_MS
+    VERIFICATION_TOKEN_TTL_MS,
   );
 
   await userRepository.setVerificationToken(
     user._id.toString(),
     hashedToken,
-    expiresAt
+    expiresAt,
   );
 
   await emailService.sendVerificationEmail(user.email, user.name, rawToken);
@@ -106,9 +106,12 @@ export const getCurrentUser = async (userId: string) => {
 export const verifyEmail = async (rawToken: string) => {
   const hashedTokenValue = hashToken(rawToken);
 
-  const user = await userRepository.findByHashedVerificationToken(
-    hashedTokenValue
-  );
+  const user =
+    await userRepository.findByHashedVerificationToken(hashedTokenValue);
+
+  if (user?.isEmailVerified === true) {
+    throw new ApiError(400, "Already registered user");
+  }
 
   if (!user) {
     throw new ApiError(400, "Invalid verification link");

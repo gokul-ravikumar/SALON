@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/Button";
 import { useAuthStore } from "@/store/authStore";
 import { apiFetch, ApiError } from "@/lib/api";
 
-type Status = "verifying" | "success" | "expired" | "invalid";
+type Status = "verifying" | "success" | "expired" | "invalid" | "existing";
 
 export function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-  
+
   const resendVerification = useAuthStore((state) => state.resendVerification);
 
   const [status, setStatus] = useState<Status>("verifying");
@@ -27,6 +27,8 @@ export function VerifyEmailPage() {
       .catch((err: unknown) => {
         if (err instanceof ApiError && err.message.toLowerCase().includes("expired")) {
           setStatus("expired");
+        } else if (err instanceof ApiError && err.message.toLowerCase().includes("already")) {
+          setStatus("existing")
         } else {
           setStatus("invalid");
         }
@@ -54,10 +56,12 @@ export function VerifyEmailPage() {
           </p>
         )}
 
-        {status === "success" && (
+        {(status === "success" || status === "existing") && (
           <>
             <h1 className="font-display text-xl text-charcoal-900 dark:text-charcoal-50">
-              Email verified successfully
+              {status === "success"
+                ? "Email verified successfully."
+                : "User already exist"}
             </h1>
             <p className="mt-3 text-sm text-charcoal-600 dark:text-charcoal-400">
               You can now log in.
