@@ -1,4 +1,5 @@
 import { User } from "../models/User";
+import { RegisterInput } from "../validators/auth.validator";
 
 export interface CreateUserInput {
   name: string;
@@ -33,3 +34,6 @@ export const markEmailAsVerified = (userId: string) =>
     isEmailVerified: true,
     verifiedAt: new Date(),
   });
+
+export const updateExistingUser = (userId: string, data: RegisterInput) =>
+  User.findByIdAndUpdate(userId, data);

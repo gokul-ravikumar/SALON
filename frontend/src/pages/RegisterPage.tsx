@@ -1,32 +1,33 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
 import { useAuthStore } from "@/store/authStore";
 import { ApiError } from "@/lib/api";
+import { registerSchema, type RegisterInput } from "@/schemas/auth.validator";
 
 export function RegisterPage() {
   const register = useAuthStore((state) => state.register);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [registered, setRegistered] = useState(false);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const {
+    register: registerField,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterInput>({
+    resolver: zodResolver(registerSchema),
+  });
+
+  const onSubmit = async (data: RegisterInput) => {
     setError(null);
-    setIsSubmitting(true);
     try {
-      await register({ name, email, phone, password, confirmPassword });
+      await register(data);
       setRegistered(true);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Registration failed");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -55,7 +56,7 @@ export function RegisterPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-charcoal-50 px-4 dark:bg-charcoal-950">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-sm rounded-2xl border border-charcoal-200 bg-white p-6 shadow-sm dark:border-charcoal-700 dark:bg-charcoal-900"
       >
         <h1 className="font-display text-xl text-charcoal-900 dark:text-charcoal-50">
@@ -68,11 +69,14 @@ export function RegisterPage() {
               Name
             </label>
             <input
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              {...registerField("name")}
               className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
             />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                {errors.name.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm text-charcoal-700 dark:text-charcoal-300">
@@ -80,22 +84,28 @@ export function RegisterPage() {
             </label>
             <input
               type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...registerField("email")}
               className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
             />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                {errors.email.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm text-charcoal-700 dark:text-charcoal-300">
               Phone
             </label>
             <input
-              required
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              {...registerField("phone")}
               className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
             />
+            {errors.phone && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                {errors.phone.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm text-charcoal-700 dark:text-charcoal-300">
@@ -103,11 +113,14 @@ export function RegisterPage() {
             </label>
             <input
               type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...registerField("password")}
               className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
             />
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                {errors.password.message}
+              </p>
+            )}
           </div>
           <div>
             <label className="text-sm text-charcoal-700 dark:text-charcoal-300">
@@ -115,11 +128,14 @@ export function RegisterPage() {
             </label>
             <input
               type="password"
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              {...registerField("confirmPassword")}
               className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
             />
+            {errors.confirmPassword && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                {errors.confirmPassword.message}
+              </p>
+            )}
           </div>
         </div>
 

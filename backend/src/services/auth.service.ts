@@ -6,7 +6,7 @@ import { emailService } from "./email/email.service";
 import { ApiError } from "../utils/ApiError";
 import { generateToken } from "../utils/generateToken";
 import { generateSecureToken, hashToken } from "../utils/token.util";
-import { loginInput, RegisterInput } from "../validators/auth.validator";
+import { LoginInput, RegisterInput } from "../validators/auth.validator";
 
 const VERIFICATION_TOKEN_TTL_MS =
   appConfig.emailVerificationExpiryHours * 60 * 60 * 1000;
@@ -34,16 +34,23 @@ export const registerUser = async (input: RegisterInput) => {
 
   const existingUser = await userRepository.findByEmail(email);
 
+  if (existingUser?.isEmailVerified) {
+    throw new ApiError(400, "Email already registered");
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   if (existingUser) {
-    if (existingUser.isEmailVerified) {
-      throw new ApiError(400, "Email already registered");
-    }
+    await userRepository.updateExistingUser(existingUser.id, {
+      name,
+      email,
+      phone,
+      password: hashedPassword,
+    });
 
     await issueVerificationToken(existingUser);
     return { message: "Registration successful. Please verify your email." };
   }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await userRepository.createUser({
     name,
@@ -53,11 +60,10 @@ export const registerUser = async (input: RegisterInput) => {
   });
 
   await issueVerificationToken(user);
-
   return { message: "Registration successful. Please verify your email." };
 };
 
-export const loginUser = async (input: loginInput) => {
+export const loginUser = async (input: LoginInput) => {
   const { email, password } = input;
 
   const existingUser = await userRepository.findByEmail(email);
