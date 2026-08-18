@@ -8,7 +8,7 @@ export const registerSchema = z.object({
     .min(3, "Name must be at least 3 characters long.")
     .max(20, "Name cannot be longer than 20 characters."),
 
-  email: z.email("Please enter a valid email address."),
+  email: z.email("Please enter a valid email address.").trim().toLowerCase(),
 
   phone: z
     .string()

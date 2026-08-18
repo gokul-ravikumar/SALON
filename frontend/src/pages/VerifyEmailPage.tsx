@@ -41,9 +41,15 @@ export function VerifyEmailPage() {
       const result = await resendVerification(email);
       setResendStatus(result.message);
     } catch (err) {
-      setResendStatus(
-        err instanceof ApiError ? err.message : "Could not resend email",
-      );
+      if (err instanceof ApiError && err.message === "Validation failed") {
+        setResendStatus(
+          "Please enter a valid email address"
+        );
+      } else {
+        setResendStatus(
+          err instanceof ApiError ? err.message : "Could not resend email",
+        );
+      }
     }
   };
 
@@ -61,7 +67,7 @@ export function VerifyEmailPage() {
             <h1 className="font-display text-xl text-charcoal-900 dark:text-charcoal-50">
               {status === "success"
                 ? "Email verified successfully."
-                : "User already exist"}
+                : "Email already verified"}
             </h1>
             <p className="mt-3 text-sm text-charcoal-600 dark:text-charcoal-400">
               You can now log in.
