@@ -1,5 +1,5 @@
 import { appConfig, brevoConfig } from "../../config/brevo.config";
-import { verificationEmailTemplate } from "../../templates/email/verificationEmail.template";
+import { verificationEmailTemplate,passwordResetEmailTemplate } from "../../templates/email/verificationEmail.template";
 
 interface SendEmailOptions {
   to: string;
@@ -42,6 +42,22 @@ class EmailService {
       name,
       verificationUrl,
       expiryHours: appConfig.emailVerificationExpiryHours,
+    });
+
+    await this.send({ to, subject, html });
+  }
+
+  async sendPasswordResetEmail(
+    to: string,
+    name: string,
+    rawToken: string,
+  ): Promise<void> {
+    const resetPasswordUrl = `${appConfig.frontendUrl}/reset-password?token=${rawToken}`;
+
+    const { subject, html } = passwordResetEmailTemplate({
+      name,
+      resetPasswordUrl,
+      expiryHours: appConfig.passwordResetExpiryHours,
     });
 
     await this.send({ to, subject, html });

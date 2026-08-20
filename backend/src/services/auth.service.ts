@@ -11,6 +11,9 @@ import { LoginInput, RegisterInput } from "../validators/auth.validator";
 const VERIFICATION_TOKEN_TTL_MS =
   appConfig.emailVerificationExpiryHours * 60 * 60 * 1000;
 
+const RESET_PASSWORD_TOKEN_TTL_MS =
+  appConfig.passwordResetExpiryHours * 60 * 60 * 1000;
+
 const issueVerificationToken = async (user: {
   _id: Types.ObjectId;
   name: string;
@@ -152,4 +155,60 @@ export const resendVerificationEmail = async (email: string) => {
   await issueVerificationToken(user);
 
   return { message: GENERIC_MESSAGE };
+};
+
+export const forgotPasswordEmail = async (email: string) => {
+  const user = await userRepository.findByEmail(email);
+
+  const GENERIC_MESSAGE =
+    "If an account exists for this email, a reset password link has been sent.";
+
+  if (!user?.isEmailVerified) {
+    return { message: GENERIC_MESSAGE };
+  }
+
+  const passwordVerificationToken = async (user: {
+    _id: Types.ObjectId;
+    name: string;
+    email: string;
+  }) => {
+    const { rawToken, hashedToken, expiresAt } = generateSecureToken(
+      RESET_PASSWORD_TOKEN_TTL_MS,
+    );
+
+    await userRepository.setPasswordResetToken(
+      user._id.toString(),
+      hashedToken,
+      expiresAt,
+    );
+
+    await emailService.sendPasswordResetEmail(user.email, user.name, rawToken);
+  };
+
+  passwordVerificationToken(user);
+  return { message: GENERIC_MESSAGE };
+};
+
+export const resetPasswordUser = async (password: string, rawToken: string) => {
+  const hashedTokenValue = hashToken(rawToken);
+
+  const user = await userRepository.findByPasswordResetToken(hashedTokenValue);
+
+  const GENERIC_MESSAGE = "Invalid or expired password reset link.";
+
+  if (!user?.isEmailVerified) {
+    return { message: GENERIC_MESSAGE };
+  }
+
+  if (
+    !user.passwordResetExpires ||
+    user.passwordResetExpires.getTime() < Date.now()
+  ) {
+    throw new ApiError(400, GENERIC_MESSAGE);
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  await userRepository.updateResetUser(user.id, { password: hashedPassword });
+  return { message: "Password updated successfully" };
 };

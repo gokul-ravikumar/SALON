@@ -10,6 +10,9 @@ export const brevoConfig = {
 export const appConfig = {
   frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
   emailVerificationExpiryHours: Number(
-    process.env.EMAIL_VERIFICATION_EXPIRY_HOURS || 24
+    process.env.EMAIL_VERIFICATION_EXPIRY_HOURS || 24,
+  ),
+  passwordResetExpiryHours: Number(
+    process.env.PASSWORD_RESET_EXPIRY_HOURS || 1,
   ),
 };

@@ -1,5 +1,5 @@
 import { User } from "../models/User";
-import { RegisterInput } from "../validators/auth.validator";
+import { RegisterInput, UpdateUserInput } from "../validators/auth.validator";
 
 export interface CreateUserInput {
   name: string;
@@ -37,3 +37,22 @@ export const markEmailAsVerified = (userId: string) =>
 
 export const updateExistingUser = (userId: string, data: RegisterInput) =>
   User.findByIdAndUpdate(userId, data);
+
+export const setPasswordResetToken = (
+  userId: string,
+  hashedToken: string,
+  expiresAt: Date,
+) =>
+  User.findByIdAndUpdate(userId, {
+    passwordResetToken: hashedToken,
+    passwordResetExpires: expiresAt,
+  });
+
+export const findByPasswordResetToken = (hashedToken: string) =>
+  User.findOne({ passwordResetToken: hashedToken }).select(
+    "+passwordResetExpires +passwordResetToken"
+  )
+
+export const updateResetUser = (userId: string, data: UpdateUserInput) => {
+  return User.findByIdAndUpdate(userId, data);
+};

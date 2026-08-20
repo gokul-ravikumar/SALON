@@ -5,6 +5,8 @@ import {
   registerUser,
   resendVerificationEmail,
   verifyEmail,
+  forgotPasswordEmail,
+  resetPasswordUser
 } from "../services/auth.service";
 import { ApiError } from "../utils/ApiError";
 import { VerifyEmailQuery } from "../validators/auth.validator";
@@ -46,6 +48,22 @@ export const resendVerification = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   const result = await resendVerificationEmail(email);
+
+  return res.status(200).json(result);
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  const result = await forgotPasswordEmail(email);
+
+  return res.status(200).json(result);
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { password, token } = req.body;
+
+  const result = await resetPasswordUser(password, token);
 
   return res.status(200).json(result);
 };

@@ -52,13 +52,22 @@ const userSchema = new Schema(
       type: Date,
       default: null,
     },
+    
+    passwordResetToken: {
+      type: String,
+      default: null,
+      select: false,
+    },
+
+    passwordResetExpires: {
+      type: Date,
+      default: null,
+      select: false,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-export const User = mongoose.model(
-  "User",
-  userSchema
-);
+export const User = mongoose.model("User", userSchema);
