@@ -49,7 +49,31 @@ export const resendVerificationSchema = z.object({
   email: z.email("Please enter a valid email address."),
 });
 
+export const forgotPasswordSchema = z.object({
+  email: z.email("Please enter a valid email address."),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters long.")
+      .max(128, "Password cannot be longer than 128 characters.")
+      .regex(
+        /^(?=.*[A-Za-z])(?=.*\d).+$/,
+        "Password must contain at least one letter and one number.",
+      ),
+
+    confirmPassword: z.string().min(8, "Please confirm your password."),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type VerifyEmailQuery = z.infer<typeof verifyEmailQuerySchema>;
 export type ResendVerificationInput = z.infer<typeof resendVerificationSchema>;
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

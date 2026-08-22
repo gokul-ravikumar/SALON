@@ -65,4 +65,5 @@ export type LoginInput = z.infer<typeof loginSchema>;
 export type VerifyEmailQuery = z.infer<typeof verifyEmailQuerySchema>;
 export type ResendVerificationInput = z.infer<typeof resendVerificationSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;

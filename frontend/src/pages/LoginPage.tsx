@@ -105,6 +105,8 @@ export function LoginPage() {
           </p>
         )}
 
+        <Link to="/forgot-password" className="mt-1 text-sm text-right float-right" >Forgot password?</Link>
+
         {needsVerification && (
           <div className="mt-2">
             <button

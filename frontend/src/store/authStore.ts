@@ -29,6 +29,11 @@ interface AuthState {
   login: (payload: LoginPayload) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<{ message: string }>;
   resendVerification: (email: string) => Promise<{ message: string }>;
+  forgotPassword: (email: string) => Promise<{ message: string }>;
+  resetPassword: (
+    password: string,
+    token: string,
+  ) => Promise<{ message: string }>;
   logout: () => void;
   fetchMe: () => Promise<void>;
 }
@@ -62,6 +67,20 @@ export const useAuthStore = create<AuthState>()(
         return apiFetch<{ message: string }>("/auth/resend-verification", {
           method: "POST",
           body: JSON.stringify({ email }),
+        });
+      },
+
+      forgotPassword: async (email) => {
+        return apiFetch<{ message: string }>("/auth/forgot-password", {
+          method: "POST",
+          body: JSON.stringify({ email }),
+        });
+      },
+
+      resetPassword: async (password, token) => {
+        return apiFetch<{ message: string }>("/auth/reset-password", {
+          method: "POST",
+          body: JSON.stringify({ password, token }),
         });
       },
 
