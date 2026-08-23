@@ -49,6 +49,11 @@
   --color-error: #ffb4ab;
   --color-error-container: #ffdad6;
 
+  /* Mint — DESIGN.md's Material `primary`/`surface-tint` token (#a1d1bf).
+     Distinct from the primary-* emerald scale used for solid CTAs; used for
+     accents like wordmarks, section labels, dividers, and glow shadows. */
+  --color-mint-glow: #a1d1bf;
+
   /* Typography */
   --font-display: "Playfair Display", ui-serif, Georgia, serif;
   --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
