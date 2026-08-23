@@ -33,7 +33,7 @@ export function DashboardPage() {
   return (
     <DashboardLayout>
       <section>
-        <h2 className="font-display text-2xl text-charcoal-900 dark:text-charcoal-50">
+        <h2 className="font-display text-2xl text-charcoal-50">
           Services
         </h2>
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -44,7 +44,7 @@ export function DashboardPage() {
       </section>
 
       <section className="mt-10">
-        <h2 className="font-display text-2xl text-charcoal-900 dark:text-charcoal-50">
+        <h2 className="font-display text-2xl text-charcoal-50">
           Today&apos;s appointments
         </h2>
         <div className="mt-4 space-y-3">
