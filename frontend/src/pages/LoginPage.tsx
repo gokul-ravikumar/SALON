@@ -5,13 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
 import { useAuthStore } from "@/store/authStore";
 import { ApiError } from "@/lib/api";
+import { resendVerification } from "@/services/auth.service";
 import { loginSchema, type LoginInput } from "@/schemas/auth.validator";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
-
-  const resendVerification = useAuthStore((state) => state.resendVerification);
 
   const [error, setError] = useState<string | null>(null);
   const [needsVerification, setNeedsVerification] = useState(false);
@@ -100,19 +99,19 @@ export function LoginPage() {
         </div>
 
         {error && (
-          <p className="mt-4 text-sm text-red-600 dark:text-red-400">
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
             {error}
           </p>
         )}
 
-        <Link to="/forgot-password" className="mt-1 text-sm text-right float-right" >Forgot password?</Link>
+        <Link to="/forgot-password" className="mt-3 text-sm text-right float-right" >Forgot password?</Link>
 
         {needsVerification && (
           <div className="mt-2">
             <button
               type="button"
               onClick={handleResend}
-              className="text-sm text-primary-600 underline dark:text-primary-400"
+              className="text-sm mt-8 text-primary-600 underline dark:text-primary-400"
             >
               Resend verification email
             </button>

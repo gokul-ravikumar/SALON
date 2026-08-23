@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
-import { useAuthStore } from "@/store/authStore";
 import { apiFetch, ApiError } from "@/lib/api";
+import { resendVerification } from "@/services/auth.service";
 
 type Status = "verifying" | "success" | "expired" | "invalid" | "existing";
 
 export function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-
-  const resendVerification = useAuthStore((state) => state.resendVerification);
 
   const [status, setStatus] = useState<Status>("verifying");
   const [email, setEmail] = useState("");

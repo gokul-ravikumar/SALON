@@ -6,6 +6,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
   const token = useAuthStore((state) => state.token);
   const logout = useAuthStore((state) => state.logout);
   const fetchMe = useAuthStore((state) => state.fetchMe);
+  
   const [isValid, setIsValid] = useState(!!token);
   const [isChecking, setIsChecking] = useState(!!token);
 

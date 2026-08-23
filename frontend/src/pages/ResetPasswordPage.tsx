@@ -3,8 +3,8 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
-import { useAuthStore } from "@/store/authStore";
 import { ApiError } from "@/lib/api";
+import { resetPassword } from "@/services/auth.service";
 import { resetPasswordSchema, type ResetPasswordInput } from "@/schemas/auth.validator";
 import { toast } from "react-toastify";
 
@@ -14,7 +14,6 @@ export function ResetPasswordPage() {
     const token = searchParams.get("token");
 
     const navigate = useNavigate();
-    const resetPassword = useAuthStore((state) => state.resetPassword);
 
     const [error, setError] = useState<string | null>(null);
 
@@ -63,6 +62,7 @@ export function ResetPasswordPage() {
                         <input
                             type="password"
                             {...register("password")}
+                            placeholder="New Password"
                             className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
                         />
                         {errors.password && (
@@ -79,6 +79,7 @@ export function ResetPasswordPage() {
                         <input
                             type="password"
                             {...register("confirmPassword")}
+                            placeholder="Confirm Password"
                             className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
                         />
                         {errors.confirmPassword && (

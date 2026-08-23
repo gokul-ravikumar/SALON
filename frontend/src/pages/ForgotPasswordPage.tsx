@@ -3,13 +3,11 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
-import { useAuthStore } from "@/store/authStore";
 import { ApiError } from "@/lib/api";
+import { forgotPassword } from "@/services/auth.service";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "@/schemas/auth.validator";
 
 export function ForgotPasswordPage() {
-  const forgotPassword = useAuthStore((state) => state.forgotPassword);
-
   const [error, setError] = useState<string | null>(null);
   const [sentEmail, setSentEmail] = useState(false)
   const {
@@ -67,6 +65,7 @@ export function ForgotPasswordPage() {
             <input
               type="email"
               {...register("email")}
+              placeholder="Enter a Email"
               className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
             />
             {errors.email && (

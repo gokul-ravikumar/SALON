@@ -3,13 +3,11 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
-import { useAuthStore } from "@/store/authStore";
 import { ApiError } from "@/lib/api";
+import { register } from "@/services/auth.service";
 import { registerSchema, type RegisterInput } from "@/schemas/auth.validator";
 
 export function RegisterPage() {
-  const register = useAuthStore((state) => state.register);
-
   const [error, setError] = useState<string | null>(null);
   const [registered, setRegistered] = useState(false);
 
@@ -70,6 +68,7 @@ export function RegisterPage() {
             </label>
             <input
               {...registerField("name")}
+              placeholder="Enter your Name"
               className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
             />
             {errors.name && (
@@ -85,6 +84,7 @@ export function RegisterPage() {
             <input
               type="email"
               {...registerField("email")}
+              placeholder="Enter your Email"
               className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
             />
             {errors.email && (
@@ -99,6 +99,7 @@ export function RegisterPage() {
             </label>
             <input
               {...registerField("phone")}
+              placeholder="Enter Phone number"
               className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
             />
             {errors.phone && (
@@ -114,6 +115,7 @@ export function RegisterPage() {
             <input
               type="password"
               {...registerField("password")}
+              placeholder="Password"
               className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
             />
             {errors.password && (
@@ -129,6 +131,7 @@ export function RegisterPage() {
             <input
               type="password"
               {...registerField("confirmPassword")}
+              placeholder="Confirm Password"
               className="mt-1 w-full rounded-xl border border-charcoal-300 bg-transparent px-3 py-2 text-sm text-charcoal-900 focus-ring dark:border-charcoal-700 dark:text-charcoal-50"
             />
             {errors.confirmPassword && (
