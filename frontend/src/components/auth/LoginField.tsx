@@ -10,9 +10,7 @@ export interface LoginFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 
 /**
  * White-background input for the "Midnight Luxe" light-input redesign.
- * Shared by LoginPage and RegisterPage. AuthField's dark bottom-border
- * style still governs ForgotPasswordPage/ResetPasswordPage, which haven't
- * been migrated yet.
+ * Shared by LoginPage, RegisterPage, ForgotPasswordPage, and ResetPasswordPage.
  */
 export const LoginField = forwardRef<HTMLInputElement, LoginFieldProps>(
   ({ label, error, labelRight, rightElement, className, ...props }, ref) => {
