@@ -16,3 +16,9 @@
 @utility section-container {
   @apply mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8;
 }
+
+@utility shadow-gold-glow {
+  box-shadow:
+    0 4px 6px -4px rgb(233 195 73 / 0.1),
+    0 10px 15px -3px rgb(233 195 73 / 0.1);
+}

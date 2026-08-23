@@ -14,6 +14,7 @@ const buttonVariants = cva(
           "border border-charcoal-700 bg-transparent text-charcoal-50 hover:bg-charcoal-800",
         ghost: "bg-transparent text-charcoal-50 hover:bg-charcoal-800",
         destructive: "bg-error text-charcoal-950 hover:bg-error/90",
+        gold: "rounded-sm shadow-gold-glow bg-linear-to-br from-[#e9c349] to-[#af8d11] text-[#3c2f00] hover:brightness-105",
       },
       size: {
         sm: "h-8 px-3 text-sm",
