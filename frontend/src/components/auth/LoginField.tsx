@@ -26,7 +26,7 @@ export const LoginField = forwardRef<HTMLInputElement, LoginFieldProps>(
           <input
             ref={ref}
             className={cn(
-              "focus-ring h-14.75 w-full border border-[#6b7280] bg-white px-3.5 text-base text-charcoal-800 placeholder:text-charcoal-500",
+              "focus-ring h-12.5 w-full border border-[#6b7280] bg-white px-3.5 text-base text-charcoal-800 placeholder:text-charcoal-500 2xl:h-14.75",
               rightElement && "pr-11",
               className,
             )}

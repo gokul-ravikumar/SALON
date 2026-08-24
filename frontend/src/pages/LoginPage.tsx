@@ -45,8 +45,8 @@ export function LoginPage() {
       setError(message);
       setNeedsVerification(
         err instanceof ApiError &&
-          err.status === 403 &&
-          message.toLowerCase().includes("verify your email"),
+        err.status === 403 &&
+        message.toLowerCase().includes("verify your email"),
       );
     }
   };
@@ -147,8 +147,6 @@ export function LoginPage() {
               {!isSubmitting && <ArrowRightIcon className="h-3.5 w-3.5" />}
             </Button>
           </div>
-
-
 
           <p className="mt-10 text-center text-base text-charcoal-100">
             New to the experience?{" "}
