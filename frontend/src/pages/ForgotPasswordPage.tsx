@@ -58,32 +58,40 @@ export function ForgotPasswordPage() {
     setCooldown(RESEND_COOLDOWN_SECONDS);
   };
 
+  const sendResetLink = async (email: string): Promise<boolean> => {
+    setError(null);
+
+    try {
+      await forgotPassword(email);
+      startCooldown();
+      return true;
+    } catch (err) {
+      const message =
+        err instanceof ApiError ? err.message : "Failed to send reset link";
+
+      setError(message);
+      return false;
+    }
+  };
+
   const onSubmit = async (data: ForgotPasswordInput) => {
     if (cooldown > 0 || isSubmitting) return;
 
-    setError(null);
-    try {
-      await forgotPassword(data.email);
+    const success = await sendResetLink(data.email);
+
+    if (success) {
       setLastEmail(data.email);
       setSentEmail(true);
-      startCooldown();
-    } catch (err) {
-      const message = err instanceof ApiError ? err.message : "Send Link failed";
-      setError(message);
     }
   };
 
   const handleResend = async () => {
     if (cooldown > 0 || isResending || !lastEmail) return;
 
-    setError(null);
     setIsResending(true);
+
     try {
-      await forgotPassword(lastEmail);
-      startCooldown();
-    } catch (err) {
-      const message = err instanceof ApiError ? err.message : "Resend failed";
-      setError(message);
+      await sendResetLink(lastEmail);
     } finally {
       setIsResending(false);
     }
