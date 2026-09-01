@@ -185,7 +185,12 @@ export const forgotPasswordEmail = async (email: string) => {
     await emailService.sendPasswordResetEmail(user.email, user.name, rawToken);
   };
 
-  passwordVerificationToken(user);
+  try {
+    await passwordVerificationToken(user);
+  } catch (err) {
+    console.error("Failed to send password reset email:", err);
+  }
+
   return { message: GENERIC_MESSAGE };
 };
 

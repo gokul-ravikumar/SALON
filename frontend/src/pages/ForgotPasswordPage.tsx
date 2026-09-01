@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,9 +10,16 @@ import { ApiError } from "@/lib/api";
 import { forgotPassword } from "@/services/auth.service";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "@/schemas/auth.validator";
 
+const RESEND_COOLDOWN_SECONDS = 60;
+
 export function ForgotPasswordPage() {
   const [error, setError] = useState<string | null>(null);
-  const [sentEmail, setSentEmail] = useState(false)
+  const [sentEmail, setSentEmail] = useState(false);
+  const [lastEmail, setLastEmail] = useState<string | null>(null);
+  const [cooldown, setCooldown] = useState(0);
+  const [isResending, setIsResending] = useState(false);
+  const cooldownEndRef = useRef<number | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -21,27 +28,85 @@ export function ForgotPasswordPage() {
     resolver: zodResolver(forgotPasswordSchema),
   });
 
+  // Tick the countdown once a cooldown is active; self-clears at 0.
+  useEffect(() => {
+    if (cooldown <= 0) return;
+
+    const intervalId = setInterval(() => {
+      const endsAt = cooldownEndRef.current;
+      if (endsAt === null) return;
+
+      const secondsLeft = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+      setCooldown(secondsLeft);
+      if (secondsLeft === 0) {
+        cooldownEndRef.current = null;
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [cooldown]);
+
+  // Cooldown is per-page-visit only; clear any pending timer on unmount.
+  useEffect(() => {
+    return () => {
+      cooldownEndRef.current = null;
+    };
+  }, []);
+
+  const startCooldown = () => {
+    cooldownEndRef.current = Date.now() + RESEND_COOLDOWN_SECONDS * 1000;
+    setCooldown(RESEND_COOLDOWN_SECONDS);
+  };
+
   const onSubmit = async (data: ForgotPasswordInput) => {
+    if (cooldown > 0 || isSubmitting) return;
+
     setError(null);
     try {
       await forgotPassword(data.email);
-      setSentEmail(true)
+      setLastEmail(data.email);
+      setSentEmail(true);
+      startCooldown();
     } catch (err) {
       const message = err instanceof ApiError ? err.message : "Send Link failed";
       setError(message);
     }
   };
 
+  const handleResend = async () => {
+    if (cooldown > 0 || isResending || !lastEmail) return;
+
+    setError(null);
+    setIsResending(true);
+    try {
+      await forgotPassword(lastEmail);
+      startCooldown();
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : "Resend failed";
+      setError(message);
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  const isSendDisabled = isSubmitting || cooldown > 0;
+  const isResendDisabled = isResending || cooldown > 0;
+  const resendLabel = isResending
+    ? "Sending…"
+    : cooldown > 0
+      ? `Resend in ${cooldown}s`
+      : "Resend Link";
+
   return (
-    <div className="relative flex min-h-screen flex-col bg-charcoal-950">
-      <header className="px-6 py-8 sm:px-16">
+    <div className="relative flex min-h-screen flex-col bg-charcoal-950 lg:h-screen lg:overflow-hidden">
+      <header className="px-6 py-8 sm:px-16 lg:py-6">
         <Link to="/" className="font-display text-2xl font-bold text-mint-glow">
-          SalonFlow
+          DaddyOm
         </Link>
       </header>
 
-      <main className="flex flex-1 items-center justify-center px-6 py-10">
-        <div className="w-full max-w-md rounded-xl border border-primary-500/20 bg-charcoal-900/60 p-10 backdrop-blur-sm">
+      <main className="flex min-h-0 flex-1 items-center justify-center px-6 py-10 lg:py-4">
+        <div className="w-full max-w-md rounded-xl border border-primary-500/20 bg-charcoal-900/60 p-10 backdrop-blur-sm lg:p-8">
           {sentEmail ? (
             <div className="text-center">
               <h1 className="font-display text-4xl font-semibold tracking-[-0.48px] text-charcoal-50">
@@ -50,16 +115,29 @@ export function ForgotPasswordPage() {
               <p className="mt-3 text-base text-charcoal-100">
                 We've sent a recovery link to your email address.
               </p>
+
+              {error && <p className="mt-4 text-sm text-error">{error}</p>}
+
+              <Button
+                type="button"
+                variant="gold"
+                className="mt-6 h-13.75 w-full lg:mt-4"
+                onClick={handleResend}
+                disabled={isResendDisabled}
+                aria-live="polite"
+              >
+                {resendLabel}
+              </Button>
               <Button
                 variant="secondary"
-                className="mt-6 w-full"
+                className="mt-4 w-full"
                 onClick={() => setSentEmail(false)}
               >
                 Change Email
               </Button>
               <Link
                 to="/login"
-                className="mt-6 inline-flex items-center gap-2 text-xs font-semibold tracking-[1px] text-gold-400 uppercase hover:text-gold-300"
+                className="mt-6 inline-flex items-center gap-2 text-xs font-semibold tracking-[1px] text-gold-400 uppercase hover:text-gold-300 lg:mt-4"
               >
                 <ArrowLeftIcon className="h-3 w-3" />
                 Back to Login
@@ -74,7 +152,7 @@ export function ForgotPasswordPage() {
                 Enter your email to receive a recovery link
               </p>
 
-              <div className="mt-8">
+              <div className="mt-8 lg:mt-6">
                 <LoginField
                   label="Email Address"
                   type="email"
@@ -89,14 +167,15 @@ export function ForgotPasswordPage() {
               <Button
                 type="submit"
                 variant="gold"
-                className="mt-8 h-13.75 w-full"
-                disabled={isSubmitting}
+                className="mt-8 h-13.75 w-full lg:mt-6"
+                disabled={isSendDisabled}
+                aria-live="polite"
               >
-                {isSubmitting ? "Sending…" : "Send Reset Link"}
-                {!isSubmitting && <ArrowRightIcon className="h-3.5 w-3.5" />}
+                {isSubmitting ? "Sending…" : cooldown > 0 ? `Resend in ${cooldown}s` : "Send Reset Link"}
+                {!isSubmitting && cooldown === 0 && <ArrowRightIcon className="h-3.5 w-3.5" />}
               </Button>
 
-              <div className="mt-6 text-center">
+              <div className="mt-6 text-center lg:mt-4">
                 <Link
                   to="/login"
                   className="inline-flex items-center gap-2 text-xs font-semibold tracking-[1px] text-gold-400 uppercase hover:text-gold-300"
@@ -110,7 +189,7 @@ export function ForgotPasswordPage() {
         </div>
       </main>
 
-      <div className="px-6 py-10">
+      <div className="px-6 py-10 lg:py-4">
         <AuthFooter />
       </div>
     </div>

@@ -4,7 +4,7 @@ export function AuthFooter() {
   return (
     <footer className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-6 text-center sm:flex-row sm:justify-between sm:text-left">
       <p className="text-xs font-medium tracking-[0.6px] text-charcoal-100">
-        © {new Date().getFullYear()} SalonFlow. Midnight Luxe Excellence.
+        © {new Date().getFullYear()} DaddyOm. Midnight Luxe Excellence.
       </p>
       <nav className="flex gap-8">
         <button

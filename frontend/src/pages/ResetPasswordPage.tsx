@@ -50,15 +50,15 @@ export function ResetPasswordPage() {
 
 
     return (
-        <div className="relative flex min-h-screen flex-col bg-charcoal-950">
-            <header className="px-6 py-8 sm:px-16">
+        <div className="relative flex min-h-screen flex-col bg-charcoal-950 lg:h-screen lg:overflow-hidden">
+            <header className="px-6 py-8 sm:px-16 lg:py-6">
                 <Link to="/" className="font-display text-2xl font-bold text-mint-glow">
-                    SalonFlow
+                    DaddyOm
                 </Link>
             </header>
 
-            <main className="flex flex-1 items-center justify-center px-6 py-10">
-                <div className="w-full max-w-md rounded-xl border border-primary-500/20 bg-charcoal-900/60 p-10 backdrop-blur-sm">
+            <main className="flex min-h-0 flex-1 items-center justify-center px-6 py-10 lg:py-4">
+                <div className="w-full max-w-md rounded-xl border border-primary-500/20 bg-charcoal-900/60 p-10 backdrop-blur-sm lg:p-8">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <h1 className="font-display text-4xl font-semibold tracking-[-0.48px] text-charcoal-50">
                             Reset Password
@@ -67,7 +67,7 @@ export function ResetPasswordPage() {
                             Enter your new password below
                         </p>
 
-                        <div className="mt-8 space-y-6">
+                        <div className="mt-8 space-y-6 lg:mt-6 lg:space-y-4">
                             <LoginField
                                 label="New Password"
                                 type={showPassword ? "text" : "password"}
@@ -117,13 +117,13 @@ export function ResetPasswordPage() {
                         <Button
                             type="submit"
                             variant="gold"
-                            className="mt-8 h-13.75 w-full"
+                            className="mt-8 h-13.75 w-full lg:mt-6"
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? "Resetting…" : "Reset Password"}
                         </Button>
 
-                        <div className="mt-6 text-center">
+                        <div className="mt-6 text-center lg:mt-4">
                             <Link
                                 to="/login"
                                 className="inline-flex items-center gap-2 text-xs font-semibold tracking-[1px] text-gold-400 uppercase hover:text-gold-300"
@@ -136,7 +136,7 @@ export function ResetPasswordPage() {
                 </div>
             </main>
 
-            <div className="px-6 py-10">
+            <div className="px-6 py-10 lg:py-4">
                 <AuthFooter />
             </div>
         </div>

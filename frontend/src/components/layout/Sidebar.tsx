@@ -12,7 +12,7 @@ export function Sidebar() {
     <aside className="hidden w-64 shrink-0 border-r border-charcoal-800 bg-charcoal-900 lg:flex lg:flex-col">
       <div className="flex h-16 items-center border-b border-charcoal-800 px-6">
         <span className="font-display text-xl text-primary-400">
-          Bloom &amp; Co.
+          DaddyOm
         </span>
       </div>
       <nav className="flex-1 space-y-1 p-4">
