@@ -1,4 +1,5 @@
 import type { ComponentType, SVGProps } from "react";
+import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import {
@@ -13,21 +14,34 @@ import {
 type NavItem = {
   label: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
-  active?: boolean;
+  /** Real route target. Items without a `to` are not wired up yet. */
+  to?: string;
 };
 
 const navItems: NavItem[] = [
-  { label: "Dashboard", icon: LayoutGridIcon, active: true },
+  { label: "Dashboard", icon: LayoutGridIcon, to: "/" },
   { label: "Appointments", icon: CalendarIcon },
-  { label: "Services", icon: ScissorsIcon },
+  { label: "Services", icon: ScissorsIcon, to: "/services" },
   { label: "Clients", icon: UserIcon },
   { label: "Staff", icon: UsersIcon },
   { label: "Settings", icon: SettingsIcon },
 ];
 
+const linkBase =
+  "focus-ring relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors";
+const linkActive = "bg-primary-900/30 text-gold-300";
+const linkIdle =
+  "text-charcoal-300 hover:bg-charcoal-800 hover:text-charcoal-100";
+
+function ActiveIndicator() {
+  return (
+    <span className="absolute top-1/2 left-0 h-6 w-0.5 -translate-y-1/2 rounded-r bg-gold-400" />
+  );
+}
+
 export function Sidebar() {
   return (
-    <aside className="hidden w-64 shrink-0 flex-col border-r border-charcoal-800 bg-charcoal-900 lg:flex">
+    <aside className="hidden w-64 shrink-0 flex-col border-r border-charcoal-800 bg-surface-container-low lg:flex">
       <div className="flex flex-col items-center gap-3 border-b border-charcoal-800 px-6 py-8">
         <div className="flex h-16 w-16 flex-col items-center justify-center rounded-lg bg-charcoal-50">
           <span className="font-display text-xl leading-none text-gold-600">DO</span>
@@ -44,25 +58,31 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 space-y-1 p-4">
-        {navItems.map(({ label, icon: Icon, active }) => (
-          <a
-            key={label}
-            href="#"
-            aria-current={active ? "page" : undefined}
-            className={cn(
-              "focus-ring relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-              active
-                ? "bg-primary-900/30 text-gold-300"
-                : "text-charcoal-300 hover:bg-charcoal-800 hover:text-charcoal-100",
-            )}
-          >
-            {active && (
-              <span className="absolute top-1/2 left-0 h-6 w-0.5 -translate-y-1/2 rounded-r bg-gold-400" />
-            )}
-            <Icon className="h-5 w-5" />
-            {label}
-          </a>
-        ))}
+        {navItems.map(({ label, icon: Icon, to }) =>
+          to ? (
+            <NavLink
+              key={label}
+              to={to}
+              end={to === "/"}
+              className={({ isActive }) =>
+                cn(linkBase, isActive ? linkActive : linkIdle)
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  {isActive && <ActiveIndicator />}
+                  <Icon className="h-5 w-5" />
+                  {label}
+                </>
+              )}
+            </NavLink>
+          ) : (
+            <a key={label} href="#" className={cn(linkBase, linkIdle)}>
+              <Icon className="h-5 w-5" />
+              {label}
+            </a>
+          ),
+        )}
       </nav>
 
       <div className="p-4">

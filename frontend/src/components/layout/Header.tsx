@@ -30,7 +30,7 @@ export function Header() {
   };
 
   return (
-    <header className="flex h-16 items-center gap-3 border-b border-charcoal-800 bg-charcoal-900 px-4 sm:gap-4 sm:px-6">
+    <header className="flex h-16 items-center gap-3 border-b border-charcoal-800 bg-surface-container-low px-4 sm:gap-4 sm:px-6">
       <div className="relative max-w-xl flex-1">
         <SearchIcon className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-charcoal-400" />
         <input

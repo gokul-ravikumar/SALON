@@ -45,6 +45,8 @@
   --color-charcoal-900: #1a2a26;
   --color-charcoal-950: #0f1715;
 
+  --color-surface-container-low: #151d1b;
+
   /* Error — from DESIGN.md's Material token set (prose doesn't define one) */
   --color-error: #ffb4ab;
   --color-error-container: #ffdad6;
