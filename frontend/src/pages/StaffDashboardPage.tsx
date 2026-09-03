@@ -231,7 +231,7 @@ function StaffTopBar() {
               className="focus-ring flex items-center gap-2 rounded-full"
             >
               <Avatar name={user?.name ?? "Guest"} size="sm" />
-              <ChevronDownIcon className="hidden h-4 w-4 text-charcoal-400 sm:block" />
+              <ChevronDownIcon size={16} className="hidden text-charcoal-400 sm:block" />
             </button>
 
             {menuOpen && (

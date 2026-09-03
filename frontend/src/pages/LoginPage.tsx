@@ -110,9 +110,9 @@ export function LoginPage() {
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    <EyeOffIcon className="h-4 w-4" />
+                    <EyeOffIcon size={16} />
                   ) : (
-                    <EyeIcon className="h-4 w-4" />
+                    <EyeIcon size={16} />
                   )}
                 </button>
               }
@@ -144,7 +144,7 @@ export function LoginPage() {
               disabled={isSubmitting}
             >
               {isSubmitting ? "Signing in…" : "Sign In"}
-              {!isSubmitting && <ArrowRightIcon className="h-3.5 w-3.5" />}
+              {!isSubmitting && <ArrowRightIcon size={14} />}
             </Button>
           </div>
 

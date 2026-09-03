@@ -80,9 +80,9 @@ export function ResetPasswordPage() {
                                         aria-label={showPassword ? "Hide password" : "Show password"}
                                     >
                                         {showPassword ? (
-                                            <EyeOffIcon className="h-4 w-4" />
+                                            <EyeOffIcon size={16} />
                                         ) : (
-                                            <EyeIcon className="h-4 w-4" />
+                                            <EyeIcon size={16} />
                                         )}
                                     </button>
                                 }
@@ -101,9 +101,9 @@ export function ResetPasswordPage() {
                                         aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                                     >
                                         {showConfirmPassword ? (
-                                            <EyeOffIcon className="h-4 w-4" />
+                                            <EyeOffIcon size={16} />
                                         ) : (
-                                            <EyeIcon className="h-4 w-4" />
+                                            <EyeIcon size={16} />
                                         )}
                                     </button>
                                 }
@@ -128,7 +128,7 @@ export function ResetPasswordPage() {
                                 to="/login"
                                 className="inline-flex items-center gap-2 text-xs font-semibold tracking-[1px] text-gold-400 uppercase hover:text-gold-300"
                             >
-                                <ArrowLeftIcon className="h-3 w-3" />
+                                <ArrowLeftIcon size={12} />
                                 Back to Login
                             </Link>
                         </div>

@@ -1,8 +1,8 @@
-import type { ComponentType, SVGProps } from "react";
 import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import {
+  type IconComponent,
   CalendarIcon,
   LayoutGridIcon,
   ScissorsIcon,
@@ -13,7 +13,7 @@ import {
 
 type NavItem = {
   label: string;
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  icon: IconComponent;
   /** Real route target. Items without a `to` are not wired up yet. */
   to?: string;
 };
@@ -76,14 +76,14 @@ export function Sidebar({ sticky = false }: { sticky?: boolean }) {
               {({ isActive }) => (
                 <>
                   {isActive && <ActiveIndicator />}
-                  <Icon className="h-5 w-5" />
+                  <Icon size={20} />
                   {label}
                 </>
               )}
             </NavLink>
           ) : (
             <a key={label} href="#" className={cn(linkBase, linkIdle)}>
-              <Icon className="h-5 w-5" />
+              <Icon size={20} />
               {label}
             </a>
           ),

@@ -102,9 +102,9 @@ export function RegisterPage() {
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
-                      <EyeOffIcon className="h-4 w-4" />
+                      <EyeOffIcon size={16} />
                     ) : (
-                      <EyeIcon className="h-4 w-4" />
+                      <EyeIcon size={16} />
                     )}
                   </button>
                 }
@@ -123,9 +123,9 @@ export function RegisterPage() {
                     aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                   >
                     {showConfirmPassword ? (
-                      <EyeOffIcon className="h-4 w-4" />
+                      <EyeOffIcon size={16} />
                     ) : (
-                      <EyeIcon className="h-4 w-4" />
+                      <EyeIcon size={16} />
                     )}
                   </button>
                 }
@@ -142,7 +142,7 @@ export function RegisterPage() {
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Creating Account…" : "Create Account"}
-                {!isSubmitting && <ArrowRightIcon className="h-3.5 w-3.5" />}
+                {!isSubmitting && <ArrowRightIcon size={14} />}
               </Button>
             </div>
 

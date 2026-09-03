@@ -112,7 +112,7 @@ export function Modal({
             aria-label="Close dialog"
             className="focus-ring -m-1 shrink-0 rounded-md p-1 text-charcoal-400 transition-colors hover:text-charcoal-50"
           >
-            <CloseIcon className="h-5 w-5" />
+            <CloseIcon size={20} />
           </button>
         </div>
 

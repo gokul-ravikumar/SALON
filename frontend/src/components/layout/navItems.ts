@@ -1,5 +1,5 @@
-import type { ComponentType, SVGProps } from "react";
 import {
+  type IconComponent,
   BookmarkIcon,
   BookOpenIcon,
   CalendarIcon,
@@ -8,7 +8,7 @@ import {
 
 export type NavItem = {
   label: string;
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  icon: IconComponent;
   active?: boolean;
 };
 

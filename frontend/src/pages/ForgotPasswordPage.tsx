@@ -147,7 +147,7 @@ export function ForgotPasswordPage() {
                 to="/login"
                 className="mt-6 inline-flex items-center gap-2 text-xs font-semibold tracking-[1px] text-gold-400 uppercase hover:text-gold-300 lg:mt-4"
               >
-                <ArrowLeftIcon className="h-3 w-3" />
+                <ArrowLeftIcon size={12} />
                 Back to Login
               </Link>
             </div>
@@ -180,7 +180,7 @@ export function ForgotPasswordPage() {
                 aria-live="polite"
               >
                 {isSubmitting ? "Sending…" : cooldown > 0 ? `Resend in ${cooldown}s` : "Send Reset Link"}
-                {!isSubmitting && cooldown === 0 && <ArrowRightIcon className="h-3.5 w-3.5" />}
+                {!isSubmitting && cooldown === 0 && <ArrowRightIcon size={14} />}
               </Button>
 
               <div className="mt-6 text-center lg:mt-4">
@@ -188,7 +188,7 @@ export function ForgotPasswordPage() {
                   to="/login"
                   className="inline-flex items-center gap-2 text-xs font-semibold tracking-[1px] text-gold-400 uppercase hover:text-gold-300"
                 >
-                  <ArrowLeftIcon className="h-3 w-3" />
+                  <ArrowLeftIcon size={12} />
                   Back to Login
                 </Link>
               </div>

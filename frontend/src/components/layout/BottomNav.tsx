@@ -20,7 +20,7 @@ export function BottomNav() {
                   : "text-charcoal-400 hover:text-charcoal-100",
               )}
             >
-              <Icon className="h-5 w-5" />
+              <Icon size={20} />
               {label}
             </a>
           </li>

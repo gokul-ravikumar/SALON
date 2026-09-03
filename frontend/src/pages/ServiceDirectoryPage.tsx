@@ -114,7 +114,7 @@ export function ServiceDirectoryPage() {
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <div className="relative w-full sm:w-64">
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-charcoal-400" />
+          <SearchIcon size={16} className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-charcoal-400" />
           <input
             type="search"
             value={query}
@@ -160,7 +160,7 @@ export function ServiceDirectoryPage() {
           className="w-full sm:ml-auto sm:w-auto"
           onClick={() => setAddOpen(true)}
         >
-          <PlusIcon className="h-4 w-4" />
+          <PlusIcon size={16} />
           Add New Service
         </Button>
       </div>
@@ -276,7 +276,7 @@ function ServiceCard({
         <div className="mt-auto pt-4">
           <div className="flex items-center justify-between gap-3 border-t border-charcoal-800 pt-4">
             <span className="inline-flex min-w-0 items-center gap-1.5 text-sm text-charcoal-200">
-              <ClockIcon className="h-4 w-4 shrink-0 text-charcoal-400" />
+              <ClockIcon size={16} className="shrink-0 text-charcoal-400" />
               <span className="truncate">{duration}</span>
             </span>
             <span className="shrink-0 text-sm font-semibold tracking-widest text-gold-400 uppercase">
@@ -315,7 +315,7 @@ function AddServiceCard({ onClick }: { onClick?: () => void }) {
       className="focus-ring flex min-h-full flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-primary-500/25 p-8 text-center transition-colors hover:border-primary-500/50 hover:bg-charcoal-900/40"
     >
       <span className="flex h-12 w-12 items-center justify-center rounded-full border border-primary-500/30 text-primary-300">
-        <PlusIcon className="h-5 w-5" />
+        <PlusIcon size={20} />
       </span>
       <span className="font-display text-lg text-charcoal-50">Add New Service</span>
       <span className="text-xs text-charcoal-400">Grow your catalog</span>

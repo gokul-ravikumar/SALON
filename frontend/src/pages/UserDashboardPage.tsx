@@ -152,7 +152,7 @@ function HeroCopy({ className }: { className?: string }) {
       </h1>
       <Button variant="primary" size="lg" className="mt-6 lg:mt-8">
         {hero.cta}
-        <ArrowRightIcon className="h-4 w-4" />
+        <ArrowRightIcon size={16} />
       </Button>
     </div>
   );
@@ -218,7 +218,7 @@ function IconServiceCard({ name, description, price }: Service) {
   return (
     <CardShell className="p-5">
       <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-900/40 text-primary-300">
-        <ScissorsIcon className="h-5 w-5" />
+        <ScissorsIcon size={20} />
       </span>
       <h3 className="mt-4 font-display text-xl text-charcoal-50">{name}</h3>
       <p className="mt-2 text-sm text-charcoal-300">{description}</p>
@@ -231,7 +231,7 @@ function IconServiceCard({ name, description, price }: Service) {
           aria-label={`Add ${name}`}
           className="focus-ring flex h-9 w-9 items-center justify-center rounded-full border border-primary-500/30 text-primary-300 hover:bg-primary-900/30"
         >
-          <PlusIcon className="h-4 w-4" />
+          <PlusIcon size={16} />
         </button>
       </div>
     </CardShell>
@@ -263,7 +263,7 @@ function ArtisanCard({ name, title }: { name: string; title: string }) {
       <div className="group overflow-hidden rounded-xl border border-primary-500/15">
         <Placeholder
           alt={name}
-          icon={<UserIcon className="h-10 w-10" />}
+          icon={<UserIcon size={40} />}
           className="h-80 w-full transition-transform duration-500 group-hover:scale-105 md:h-72 lg:h-80"
         />
       </div>

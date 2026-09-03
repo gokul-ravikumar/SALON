@@ -38,7 +38,7 @@ export function Header({ sticky = false }: { sticky?: boolean }) {
       )}
     >
       <div className="relative max-w-xl flex-1">
-        <SearchIcon className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-charcoal-400" />
+        <SearchIcon size={16} className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-charcoal-400" />
         <input
           type="search"
           placeholder="Search clients, stylists, or orders..."
@@ -57,7 +57,7 @@ export function Header({ sticky = false }: { sticky?: boolean }) {
           className="focus-ring flex items-center gap-2 rounded-full"
         >
           <Avatar name={user?.name ?? "Guest"} size="sm" />
-          <ChevronDownIcon className="hidden h-4 w-4 text-charcoal-400 sm:block" />
+          <ChevronDownIcon size={16} className="hidden text-charcoal-400 sm:block" />
         </button>
 
         {menuOpen && (

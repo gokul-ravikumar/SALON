@@ -89,11 +89,11 @@ export function DashboardPage() {
         <StatCard
           label="Total Revenue (Today)"
           iconTone="primary"
-          icon={<WalletIcon className="h-6 w-6" />}
+          icon={<WalletIcon size={24} />}
           value={<span className="text-gold-400">$4,850.00</span>}
           topRight={
             <span className="inline-flex items-center gap-1 rounded-sm bg-gold-900/40 px-2 py-1 text-xs font-semibold text-gold-300">
-              <TrendingUpIcon className="h-3.5 w-3.5" />
+              <TrendingUpIcon size={14} />
               +12%
             </span>
           }
@@ -102,7 +102,7 @@ export function DashboardPage() {
         <StatCard
           label="Today's Appointments"
           iconTone="gold"
-          icon={<CalendarCheckIcon className="h-6 w-6" />}
+          icon={<CalendarCheckIcon size={24} />}
           topRight={
             <span className="text-xs font-semibold tracking-widest text-charcoal-300 uppercase">
               77% Full
@@ -121,7 +121,7 @@ export function DashboardPage() {
         <StatCard
           label="Low Stock Alerts"
           iconTone="error"
-          icon={<AlertTriangleIcon className="h-6 w-6" />}
+          icon={<AlertTriangleIcon size={24} />}
           topRight={
             <button
               type="button"
@@ -168,7 +168,7 @@ export function DashboardPage() {
                 aria-label="Top stylists options"
                 className="focus-ring rounded-md p-1 text-charcoal-400 hover:text-charcoal-200"
               >
-                <MoreHorizontalIcon className="h-5 w-5" />
+                <MoreHorizontalIcon size={20} />
               </button>
             </div>
             <ul className="mt-4 space-y-4">

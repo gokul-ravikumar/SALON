@@ -30,7 +30,7 @@ export function Placeholder({ src, alt, className, icon }: PlaceholderProps) {
         className,
       )}
     >
-      {icon ?? <ImageIcon className="h-8 w-8" />}
+      {icon ?? <ImageIcon size={32} />}
     </div>
   );
 }

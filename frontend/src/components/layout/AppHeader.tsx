@@ -39,7 +39,7 @@ export function AppHeader() {
           aria-label="Open menu"
           className="focus-ring rounded-md p-1 text-charcoal-200 hover:text-charcoal-50 md:hidden"
         >
-          <MenuIcon className="h-6 w-6" />
+          <MenuIcon size={24} />
         </button>
 
         <span className="mx-auto font-display text-lg tracking-[0.3em] text-charcoal-50 md:mx-0 md:text-xl">
@@ -77,7 +77,7 @@ export function AppHeader() {
             className="focus-ring flex items-center gap-2 rounded-full"
           >
             <Avatar name={user?.name ?? "Guest"} size="sm" />
-            <ChevronDownIcon className="hidden h-4 w-4 text-charcoal-400 sm:block" />
+            <ChevronDownIcon size={16} className="hidden text-charcoal-400 sm:block" />
           </button>
 
           {menuOpen && (
