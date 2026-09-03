@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { DashboardPage } from '@/pages/DashboardPage'
+import { StaffDashboardPage } from '@/pages/StaffDashboardPage'
 import { UserDashboardPage } from '@/pages/UserDashboardPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
@@ -12,7 +13,9 @@ import { useAuthStore } from '@/store/authStore'
 
 function HomeRoute() {
   const role = useAuthStore((state) => state.user?.role)
-  return role === 'admin' ? <DashboardPage /> : <UserDashboardPage />
+  if (role === 'admin') return <DashboardPage />
+  if (role === 'staff') return <StaffDashboardPage />
+  return <UserDashboardPage />
 }
 
 function App() {
