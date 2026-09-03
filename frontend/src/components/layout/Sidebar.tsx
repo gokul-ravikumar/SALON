@@ -39,9 +39,14 @@ function ActiveIndicator() {
   );
 }
 
-export function Sidebar() {
+export function Sidebar({ sticky = false }: { sticky?: boolean }) {
   return (
-    <aside className="hidden w-64 shrink-0 flex-col border-r border-charcoal-800 bg-surface-container-low lg:flex">
+    <aside
+      className={cn(
+        "hidden w-64 shrink-0 flex-col border-r border-charcoal-800 bg-surface-container-low lg:flex",
+        sticky && "lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto scrollbar-luxe",
+      )}
+    >
       <div className="flex flex-col items-center gap-3 border-b border-charcoal-800 px-6 py-8">
         <div className="flex h-16 w-16 flex-col items-center justify-center rounded-lg bg-charcoal-50">
           <span className="font-display text-xl leading-none text-gold-600">DO</span>

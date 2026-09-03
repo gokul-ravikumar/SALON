@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes";
+import serviceRoutes from "./routes/service.routes";
 import { errorHandler } from "./middlewares/errorHandler";
 
 dotenv.config();
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/services", serviceRoutes);
 
 app.use(errorHandler);
 

@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { Avatar } from "@/components/ui/Avatar";
 import { ChevronDownIcon, SearchIcon } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 
-export function Header() {
+export function Header({ sticky = false }: { sticky?: boolean }) {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
@@ -30,7 +31,12 @@ export function Header() {
   };
 
   return (
-    <header className="flex h-16 items-center gap-3 border-b border-charcoal-800 bg-surface-container-low px-4 sm:gap-4 sm:px-6">
+    <header
+      className={cn(
+        "flex h-16 items-center gap-3 border-b border-charcoal-800 bg-surface-container-low px-4 sm:gap-4 sm:px-6",
+        sticky && "sticky top-0 z-30",
+      )}
+    >
       <div className="relative max-w-xl flex-1">
         <SearchIcon className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-charcoal-400" />
         <input

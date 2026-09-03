@@ -1,98 +1,22 @@
-import { useMemo, useState } from "react";
-import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
+import { ServiceDirectoryLayout } from "@/components/layout/ServiceDirectoryLayout";
 import { Button } from "@/components/ui/Button";
 import { CardShell } from "@/components/ui/Card";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Pill } from "@/components/ui/Pill";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { ClockIcon, PlusIcon, SearchIcon } from "@/components/ui/icons";
-
-type Service = {
-  id: string;
-  title: string;
-  description: string;
-  /** Human-readable, e.g. "45 min" or "1h 30m". */
-  duration: string;
-  price: number;
-  category: string;
-  /** Real image URL — omitted until photography lands; falls back to a placeholder. */
-  image?: string;
-};
-
-/** Swap for a real data source when the services API lands. */
-const services: Service[] = [
-  {
-    id: "signature-balayage",
-    title: "Signature Balayage",
-    description:
-      "Hand-painted brilliance tailored to your natural movement and bone structure for a sun-kissed, lived-in finish.",
-    duration: "2h 30m",
-    price: 350,
-    category: "Colour",
-  },
-  {
-    id: "precision-cut",
-    title: "Precision Cut & Style",
-    description:
-      "Architectural shapes that evolve with your lifestyle. Consultation, cut, and a finished blow-dry.",
-    duration: "1h 15m",
-    price: 120,
-    category: "Cut & Style",
-  },
-  {
-    id: "gloss-tone",
-    title: "Gloss & Tone",
-    description:
-      "Luminous shine with semi-permanent depth. The perfect refresh between full-colour appointments.",
-    duration: "45 min",
-    price: 90,
-    category: "Colour",
-  },
-  {
-    id: "restorative-therapy",
-    title: "Restorative Bond Therapy",
-    description:
-      "Molecular repair for compromised hair — rebuilds strength, elasticity, and softness from within.",
-    duration: "1h",
-    price: 95,
-    category: "Treatment",
-  },
-  {
-    id: "silk-press",
-    title: "Silk Press",
-    description:
-      "A sleek, mirror-smooth press with lightweight body and movement that lasts, without chemical relaxers.",
-    duration: "1h 45m",
-    price: 130,
-    category: "Cut & Style",
-  },
-  {
-    id: "scalp-ritual",
-    title: "Scalp Renewal Ritual",
-    description:
-      "Exfoliating cleanse, lymphatic massage, and a nourishing mask to reset the scalp and encourage growth.",
-    duration: "50 min",
-    price: 75,
-    category: "Treatment",
-  },
-  {
-    id: "bridal-styling",
-    title: "Bridal & Event Styling",
-    description:
-      "A bespoke upstyle or blow-out for your occasion, with an optional trial session beforehand.",
-    duration: "2h",
-    price: 210,
-    category: "Occasion",
-  },
-  {
-    id: "colour-correction",
-    title: "Colour Correction",
-    description:
-      "Specialist multi-step work to undo previous colour and rebuild a healthy, even base. Priced from.",
-    duration: "3h 30m",
-    price: 420,
-    category: "Colour",
-  },
-];
+import { ServiceFormModal } from "@/components/services/ServiceFormModal";
+import { ApiError } from "@/lib/api";
+import {
+  createService,
+  deleteService,
+  listServices,
+  updateService,
+  type Service,
+} from "@/services/service.service";
+import type { ServiceInput } from "@/schemas/service.validator";
 
 type SortKey = "name" | "price" | "duration";
 
@@ -103,16 +27,61 @@ function durationMinutes(label: string): number {
   return (hours ? Number(hours[1]) * 60 : 0) + (mins ? Number(mins[1]) : 0);
 }
 
-const categories = ["All Categories", ...Array.from(new Set(services.map((s) => s.category)))];
-
 export function ServiceDirectoryPage() {
+  const [items, setItems] = useState<Service[]>([]);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [loadError, setLoadError] = useState("");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All Categories");
   const [sort, setSort] = useState<SortKey>("name");
+  const [addOpen, setAddOpen] = useState(false);
+  const [editing, setEditing] = useState<Service | null>(null);
+  const [deleting, setDeleting] = useState<Service | null>(null);
+
+  const load = useCallback(() => {
+    setStatus("loading");
+    return listServices()
+      .then((data) => { 
+        setItems(data);
+        setStatus("ready");
+      })
+      .catch((err) => {
+        setLoadError(
+          err instanceof ApiError ? err.message : "Could not load services.",
+        );
+        setStatus("error");
+      });
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const categoryOptions = useMemo(
+    () => Array.from(new Set(items.map((s) => s.category))),
+    [items],
+  );
+  const categories = ["All Categories", ...categoryOptions];
+
+  const handleCreate = async (data: ServiceInput) => {
+    const created = await createService(data);
+    setItems((prev) => [created, ...prev]);
+  };
+
+  const handleUpdate = async (id: string, data: ServiceInput) => {
+    const updated = await updateService(id, data);
+    setItems((prev) => prev.map((s) => (s.id === id ? updated : s)));
+  };
+
+  const handleDelete = async (id: string) => {
+    await deleteService(id);
+    setItems((prev) => prev.filter((s) => s.id !== id));
+    toast.success("Service deleted.");
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const rows = services.filter((service) => {
+    const rows = items.filter((service) => {
       const matchesQuery =
         !q ||
         service.title.toLowerCase().includes(q) ||
@@ -127,13 +96,13 @@ export function ServiceDirectoryPage() {
       if (sort === "duration") return durationMinutes(a.duration) - durationMinutes(b.duration);
       return a.title.localeCompare(b.title);
     });
-  }, [query, category, sort]);
+  }, [items, query, category, sort]);
 
   const controlClass =
     "focus-ring h-11 rounded-lg border border-charcoal-800 bg-charcoal-950/60 text-sm text-charcoal-50";
 
   return (
-    <DashboardLayout>
+    <ServiceDirectoryLayout>
       <section>
         <h1 className="font-display text-3xl text-charcoal-50 sm:text-4xl">
           Service <span className="text-gold-400">Directory</span>
@@ -186,40 +155,111 @@ export function ServiceDirectoryPage() {
           <option value="duration">Sort: Duration</option>
         </select>
 
-        <Button variant="gold" className="w-full sm:ml-auto sm:w-auto">
+        <Button
+          variant="gold"
+          className="w-full sm:ml-auto sm:w-auto"
+          onClick={() => setAddOpen(true)}
+        >
           <PlusIcon className="h-4 w-4" />
           Add New Service
         </Button>
       </div>
 
-      <p className="mt-6 text-xs font-medium tracking-widest text-charcoal-400 uppercase">
-        {filtered.length} {filtered.length === 1 ? "Service" : "Services"}
-      </p>
-
-      {filtered.length === 0 ? (
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-          <CardShell className="p-8 text-center sm:col-span-2 lg:col-span-2">
-            <p className="font-display text-xl text-charcoal-50">No services found</p>
-            <p className="mx-auto mt-2 max-w-sm text-sm text-charcoal-300">
-              Nothing matches your search and filters. Try a different term or clear the
-              category filter.
-            </p>
-          </CardShell>
-          <AddServiceCard />
-        </div>
-      ) : (
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-          {filtered.map((service) => (
-            <ServiceCard key={service.id} {...service} />
-          ))}
-          <AddServiceCard />
-        </div>
+      {status === "loading" && (
+        <p className="mt-10 text-sm text-charcoal-400">Loading services…</p>
       )}
-    </DashboardLayout>
+
+      {status === "error" && (
+        <CardShell className="mt-6 p-8 text-center">
+          <p className="font-display text-xl text-charcoal-50">
+            Couldn’t load services
+          </p>
+          <p className="mx-auto mt-2 max-w-sm text-sm text-charcoal-300">
+            {loadError}
+          </p>
+          <Button variant="outline" className="mt-5" onClick={() => void load()}>
+            Try again
+          </Button>
+        </CardShell>
+      )}
+
+      {status === "ready" && (
+        <>
+          <p className="mt-6 text-xs font-medium tracking-widest text-charcoal-400 uppercase">
+            {filtered.length} {filtered.length === 1 ? "Service" : "Services"}
+          </p>
+
+          {filtered.length === 0 ? (
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+              <CardShell className="p-8 text-center sm:col-span-2 lg:col-span-2">
+                <p className="font-display text-xl text-charcoal-50">
+                  {items.length === 0 ? "No services yet" : "No services found"}
+                </p>
+                <p className="mx-auto mt-2 max-w-sm text-sm text-charcoal-300">
+                  {items.length === 0
+                    ? "Add your first service to start building the directory."
+                    : "Nothing matches your search and filters. Try a different term or clear the category filter."}
+                </p>
+              </CardShell>
+              <AddServiceCard onClick={() => setAddOpen(true)} />
+            </div>
+          ) : (
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+              {filtered.map((service) => (
+                <ServiceCard
+                  key={service.id}
+                  service={service}
+                  onEdit={setEditing}
+                  onDelete={setDeleting}
+                />
+              ))}
+              <AddServiceCard onClick={() => setAddOpen(true)} />
+            </div>
+          )}
+        </>
+      )}
+
+      <ServiceFormModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        onSave={handleCreate}
+        categoryOptions={categoryOptions}
+      />
+
+      <ServiceFormModal
+        open={editing !== null}
+        onClose={() => setEditing(null)}
+        onSave={(data) => handleUpdate(editing!.id, data)}
+        categoryOptions={categoryOptions}
+        service={editing ?? undefined}
+      />
+
+      <ConfirmDialog
+        open={deleting !== null}
+        onClose={() => setDeleting(null)}
+        onConfirm={() => handleDelete(deleting!.id)}
+        title="Delete service"
+        message={
+          deleting
+            ? `"${deleting.title}" will be permanently removed. This can't be undone.`
+            : ""
+        }
+        confirmLabel="Delete"
+      />
+    </ServiceDirectoryLayout>
   );
 }
 
-function ServiceCard({ title, description, duration, price, category, image }: Service) {
+function ServiceCard({
+  service,
+  onEdit,
+  onDelete,
+}: {
+  service: Service;
+  onEdit: (service: Service) => void;
+  onDelete: (service: Service) => void;
+}) {
+  const { title, description, duration, price, category, image } = service;
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-xl border border-primary-500/15 bg-linear-to-b from-charcoal-900 to-charcoal-950">
       <div className="relative">
@@ -243,19 +283,35 @@ function ServiceCard({ title, description, duration, price, category, image }: S
               ${price}
             </span>
           </div>
-          <Button variant="outline" size="sm" className="mt-4 w-full">
-            View Details
-          </Button>
+          <div className="mt-4 flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1"
+              onClick={() => onEdit(service)}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 border-error/40 text-error hover:bg-error/10 hover:text-error"
+              onClick={() => onDelete(service)}
+            >
+              Delete
+            </Button>
+          </div>
         </div>
       </div>
     </article>
   );
 }
 
-function AddServiceCard() {
+function AddServiceCard({ onClick }: { onClick?: () => void }) {
   return (
     <button
       type="button"
+      onClick={onClick}
       className="focus-ring flex min-h-full flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-primary-500/25 p-8 text-center transition-colors hover:border-primary-500/50 hover:bg-charcoal-900/40"
     >
       <span className="flex h-12 w-12 items-center justify-center rounded-full border border-primary-500/30 text-primary-300">
