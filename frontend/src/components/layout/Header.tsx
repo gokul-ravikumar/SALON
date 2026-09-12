@@ -2,10 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { Avatar } from "@/components/ui/Avatar";
-import { ChevronDownIcon, SearchIcon } from "@/components/ui/icons";
+import { ChevronDownIcon, MenuIcon, SearchIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 
-export function Header({ sticky = false }: { sticky?: boolean }) {
+interface HeaderProps {
+  sticky?: boolean;
+  isMobileNavOpen?: boolean;
+  onMenuClick?: () => void;
+}
+
+export function Header({ sticky = false, isMobileNavOpen = false, onMenuClick }: HeaderProps) {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
@@ -37,6 +43,17 @@ export function Header({ sticky = false }: { sticky?: boolean }) {
         sticky && "sticky top-0 z-30",
       )}
     >
+      <button
+        type="button"
+        onClick={onMenuClick}
+        aria-label="Open menu"
+        aria-expanded={isMobileNavOpen}
+        aria-controls="admin-sidebar"
+        className="focus-ring -ml-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-md text-charcoal-300 hover:bg-charcoal-800 hover:text-charcoal-100 lg:hidden"
+      >
+        <MenuIcon size={20} />
+      </button>
+
       <div className="relative max-w-xl flex-1">
         <SearchIcon size={16} className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-charcoal-400" />
         <input

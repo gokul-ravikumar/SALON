@@ -1,4 +1,4 @@
-import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { AdminLayout } from "@/components/layout/AdminLayout";
 import { Button } from "@/components/ui/Button";
 import { CardShell } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
@@ -75,7 +75,7 @@ export function DashboardPage() {
   const now = new Date();
 
   return (
-    <DashboardLayout>
+    <AdminLayout>
       <section>
         <h1 className="font-display text-3xl text-charcoal-50 sm:text-4xl">
           {greetingFor(now)}, <span className="text-gold-400">{firstName}.</span>
@@ -182,7 +182,7 @@ export function DashboardPage() {
           </CardShell>
         </aside>
       </div>
-    </DashboardLayout>
+    </AdminLayout>
   );
 }
 
