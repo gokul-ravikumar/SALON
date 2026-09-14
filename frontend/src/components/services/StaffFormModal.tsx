@@ -95,7 +95,7 @@ export function StaffFormModal({
         <Modal
             open={open}
             onClose={onClose}
-            title={isEdit ? "Edit Service" : "Add Service"}
+            title={isEdit ? "Edit Staff" : "Add Staff"}
             description={
                 isEdit
                     ? "Update this treatment's details."
@@ -201,7 +201,7 @@ export function StaffFormModal({
                         disabled={isSubmitting}
                         className="w-full sm:w-auto"
                     >
-                        {isSubmitting ? "Saving…" : isEdit ? "Save Changes" : "Add Service"}
+                        {isSubmitting ? "Saving…" : isEdit ? "Save Changes" : "Add Staff"}
                     </Button>
                 </div>
             </form>

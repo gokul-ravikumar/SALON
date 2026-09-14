@@ -64,7 +64,7 @@ export function StaffDirectoryPage() {
   const handleDelete = async (id: string) => {
     await deleteStaff(id);
     setItems((prev) => prev.filter((s) => s.id !== id));
-    toast.success("Service deleted.");
+    toast.success("Staff deleted.");
   };
 
   const filtered = useMemo(() => {
