@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes";
 import serviceRoutes from "./routes/service.routes";
 import staffRoutes from "./routes/staff.routes"
+import categoryRoutes from "./routes/category.routes"
 import { errorHandler } from "./middlewares/errorHandler";
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/services", serviceRoutes);
 app.use("/staff",staffRoutes)
+app.use("/category",categoryRoutes)
 
 app.use(errorHandler);
 

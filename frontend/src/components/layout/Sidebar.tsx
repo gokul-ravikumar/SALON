@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import {
   type IconComponent,
+  BookOpenIcon,
   CalendarIcon,
   CloseIcon,
   LayoutGridIcon,
@@ -26,6 +27,7 @@ const navItems: NavItem[] = [
   { label: "Services", icon: ScissorsIcon, to: "/services" },
   { label: "Clients", icon: UserIcon },
   { label: "Staff", icon: UsersIcon, to: "/staff" },
+  { label: "Category", icon: BookOpenIcon, to: "/category" },
   { label: "Settings", icon: SettingsIcon },
 ];
 

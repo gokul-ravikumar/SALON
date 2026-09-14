@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { ServiceDirectoryPage } from '@/pages/ServiceDirectoryPage'
 import { StaffDirectoryPage } from '@/pages/StaffDirectoryPage'
+import { CategoryDirectoryPage } from '@/pages/CategoryDirectoryPage'
 import { StaffDashboardPage } from '@/pages/StaffDashboardPage'
 import { UserDashboardPage } from '@/pages/UserDashboardPage'
 import { LoginPage } from '@/pages/LoginPage'
@@ -31,6 +32,7 @@ function App() {
       <Route path="/" element={<ProtectedRoute><HomeRoute /></ProtectedRoute>} />
       <Route path="/services" element={<ProtectedRoute><ServiceDirectoryPage /></ProtectedRoute>} />
       <Route path="/staff" element={<ProtectedRoute><StaffDirectoryPage /></ProtectedRoute>} />
+      <Route path="/category" element={<ProtectedRoute><CategoryDirectoryPage /></ProtectedRoute>} />
     </Routes>
   )
 }
