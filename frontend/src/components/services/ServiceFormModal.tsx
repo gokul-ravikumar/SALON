@@ -99,7 +99,7 @@ export function ServiceFormModal({
           <span className="text-xs font-medium tracking-[0.075em] text-charcoal-100 uppercase">
             Service Image
           </span>
-          <div className="mt-2 flex aspect-[16/10] w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-primary-500/25 bg-charcoal-950/40 px-4 text-center">
+          <div className="mt-2 flex aspect-16/10 w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-primary-500/25 bg-charcoal-950/40 px-4 text-center">
             <ImageIcon size={32} className="text-charcoal-600" />
             <span className="text-sm text-charcoal-400">
               Image upload coming soon

@@ -139,7 +139,7 @@ export function StaffDashboardPage() {
                   <p className="text-xs font-medium tracking-wider text-charcoal-100 uppercase">
                     {recentNote.label}
                   </p>
-                  <pre className="scrollbar-hide overflow-x-auto rounded border border-primary-500/10 bg-[#151d1b] p-4 font-mono text-[13px] leading-[1.6] text-[#b8cac4]">
+                  <pre className="scrollbar-hide overflow-x-auto rounded border border-primary-500/10 bg-surface-container-low p-4 font-mono text-[13px] leading-[1.6] text-[#b8cac4]">
                     {recentNote.formula}
                   </pre>
                 </div>
@@ -293,7 +293,7 @@ function ScheduleSlotRow({
           : "bg-charcoal-900/60 backdrop-blur-md",
       )}
     >
-      <div className="flex w-[70px] shrink-0 flex-col items-end">
+      <div className="flex w-17.5 shrink-0 flex-col items-end">
         <span className="font-sans text-sm font-semibold tracking-widest text-charcoal-50">
           {time}
         </span>
@@ -325,7 +325,7 @@ function StaffBottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 rounded-t-xl border-t border-primary-500/10 bg-[#151d1b]/90 shadow-[0_4px_6px_0_rgb(161_209_191/0.1),0_10px_15px_0_rgb(161_209_191/0.1)] backdrop-blur-xl md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 rounded-t-xl border-t border-primary-500/10 bg-surface-container-low/90 shadow-[0_4px_6px_0_rgb(161_209_191/0.1),0_10px_15px_0_rgb(161_209_191/0.1)] backdrop-blur-xl md:hidden"
     >
       <ul className="mx-auto flex max-w-md items-center justify-around px-6 py-3">
         {navLinks.map(({ label, icon: Icon, active }) => (
